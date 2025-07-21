@@ -1,19 +1,22 @@
-name: Cypress Test
+name: E2E Tests
+# Installs AB with the given runtime and run our e2e test.
 on:
-  # Run on any commit to the #master branch
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
   push:
-    branches: [master, is/update]
-
+    branches: [master]
   # Run on pull requests into the #master branch
-
   pull_request:
     branches: [master]
 
   # Allows user to trigger the workflow from GitHub's web UI
   workflow_dispatch:
-
 jobs:
   cypress-test:
+    name: Cypress E2E Tests
     runs-on: ubuntu-latest
     env:
       CYPRESS_BASE_URL: http://127.0.0.1:8088
@@ -24,68 +27,43 @@ jobs:
       CYPRESS_TENANT: "admin"
       TENANT: "admin"
     steps:
-      # Setup
-      - uses: roguisharcanetrickster/ab-install-action@v1.0.4
+      - name: Install AppBuilder
+        uses: CruGlobal/ab-install-action@v1
         with:
           folder: ab
-          stack: ab
-          port: 8080 # this isn't related to the test port at all
-      # Up
-      - name: Bring up AppBuilder
-        run: |
-          echo "Starting AppBuilder with npm run test:boot"
-          npm run test:boot
-        working-directory: ./ab
+          port: 8080
+          runtime: ${{ inputs.ref }}
 
-      # - name: Debug AppBuilder Startup
-      #   run: |
-      #     sleep 601
-      #     echo "=== Checking what's listening on port 8080 ==="
-      #     netstat -tlnp | grep :8080 || echo "Nothing listening on port 8080"
-          
-      #     echo "=== Checking if port 8080 is in use ==="
-      #     lsof -i :8080 || echo "Port 8080 is not in use"
-
-      #     echo "=== Checking what's listening on port 8088 ==="
-      #     netstat -tlnp | grep :8088 || echo "Nothing listening on port 8088"
-          
-      #     echo "=== Checking if port 8088 is in use ==="
-      #     lsof -i :8088 || echo "Port 8088 is not in use"
-      #     echo "=== Checking what's listening on port 8080 ==="
-      #     netstat -tlnp | grep :8080 || echo "Nothing listening on port 8080"
-          
-      #     echo "=== Checking if port 8080 is in use ==="
-      #     lsof -i :8080 || echo "Port 8080 is not in use"
-      #   working-directory: ./ab
-
-      - name: Docker Compose Status & Logs
-        run: |
-          echo "=== Docker Compose ps (all services) ==="
-          docker compose ps -a
-          echo "=== Docker ps (all containers) ==="
-          docker ps -a
-          echo "=== db Container Check ==="
-          docker ps -a | grep -i db || echo "No db containers found"
-          echo "=== Docker Compose Config ==="
-          docker compose config | grep -A 10 "web:" || true
-        working-directory: ./ab
-
-      - name: Check out
+      - name: Check out kitchen-sink tests
         uses: actions/checkout@v4
         with:
           path: ab/test/e2e/cypress/e2e/kitchensink_app
 
-      - name: Wait for test AB
+      - name: Deploy Stack
+        run: ./UP.sh -t -q
+        working-directory: ./ab
+
+      # These next steps are to save our ablogs to file
+      - run: npm install pm2@latest -g
+      - name: Save Logs
+        run: pm2 start ./logs.js -- --toFile logs/ABServices.log
+        working-directory: ./ab
+
+      - run: docker service ls
+
+      # Run test
+      - name: Wait for AB
+        if: false
         uses: ifaxity/wait-on-action@v1.2.1
         with:
-          resource: http://127.0.0.1:8088
-          timeout: 300000  # 5 minutes
-          delay: 5000      # Wait 5 seconds before starting to check
-          interval: 5000   # Check every 5 seconds
-          verbose: true    
+          resource: http://localhost:8080
+          timeout: 300000
+      - run: sleep 60s
+
+      - run: docker service ls
 
       - name: Run Cypress Tests
-        run: npm run test:e2e:app -- --browser chrome
+        run: npm run test:e2e:ab-runtime -- --browser chrome
         working-directory: ./ab
 
       - uses: actions/upload-artifact@v4
