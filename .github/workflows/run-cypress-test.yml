@@ -7,7 +7,7 @@ on:
         required: true
         type: string
   push:
-    branches: [master]
+    branches: [master, rat/add_pwa]
   # Run on pull requests into the #master branch
   pull_request:
     branches: [master]
@@ -19,13 +19,9 @@ jobs:
     name: Cypress E2E Tests
     runs-on: ubuntu-latest
     env:
-      CYPRESS_BASE_URL: http://127.0.0.1:8088
       CYPRESS_RESPONSE_TIMEOUT: 200000
       CYPRESS_DEFAULT_COMMAND_TIMEOUT: 30000
       CYPRESS_RETRIES: 2
-      STACK: test_ab
-      CYPRESS_TENANT: "admin"
-      TENANT: "admin"
     steps:
       - name: Install AppBuilder
         uses: CruGlobal/ab-install-action@v1
@@ -71,9 +67,9 @@ jobs:
         with:
           name: cypress-screenshots
           path: ./ab/test/e2e/cypress/screenshots
+
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: ABServices.log
           path: ./ab/logs/ABServices.log
-
