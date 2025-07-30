@@ -7,7 +7,8 @@ on:
         required: true
         type: string
   push:
-    branches: [master, rat/add_pwa]
+    branches: [master]
+
   # Run on pull requests into the #master branch
   pull_request:
     branches: [master]
