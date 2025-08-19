@@ -78,6 +78,18 @@ describe("Smoke Test", () => {
    });
 });
 
+describe("pwa Tests", () => {
+   beforeEach(() => {
+      cy.viewport('iphone-6') // Set viewport to 375px x 667px
+      cy.visit("/mobile/app/admin/c355634c-42ca-4317-a086-3aeb4f750d8b?route=First_Page");
+      cy.get(".title-large-text", { timeout: 30000 }).should("be.visible").contains("First Page");
+   });
+
+   pwaTestCases.forEach((tc) => {
+      tc(folderName, Common);
+   });
+});
+
 describe("Widget Tests", () => {
    beforeEach(() => {
       // Common.RunSQL(cy, folderName, [
@@ -107,18 +119,6 @@ describe("Process Tests", () => {
    });
 
    ProcessTestCases.forEach((tc) => {
-      tc(folderName, Common);
-   });
-});
-
-describe("pwa Tests", () => {
-   beforeEach(() => {
-      cy.viewport('iphone-6') // Set viewport to 375px x 667px
-      cy.visit("/mobile/app/admin/c355634c-42ca-4317-a086-3aeb4f750d8b?route=First_Page");
-      cy.get(".title-large-text", { timeout: 30000 }).should("be.visible").contains("First Page");
-   });
-
-   pwaTestCases.forEach((tc) => {
       tc(folderName, Common);
    });
 });
