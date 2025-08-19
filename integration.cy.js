@@ -78,7 +78,7 @@ describe("Smoke Test", () => {
    });
 });
 
-describe.skip("Widget Tests", () => {
+describe("Widget Tests", () => {
    beforeEach(() => {
       // Common.RunSQL(cy, folderName, [
       //    "add_testkcs.sql",
@@ -100,7 +100,7 @@ describe.skip("Widget Tests", () => {
    });
 });
 
-describe.skip("Process Tests", () => {
+describe("Process Tests", () => {
    beforeEach(() => {
       cy.visit("/");
       cy.get('[data-cy="dd6f7981-cc7b-457c-b231-742ce85004f8"]').click();
