@@ -10,7 +10,9 @@ export default () => {
             .click();
       });
 
-      it("Unlinked DC Loads Data", () => {
+      it("DataCollection Tests", () => {
+         // Test 1: Unlinked DC Loads Data
+         cy.log("Test 1: Unlinked DC Loads Data");
          cy.get(
             '[data-cy="tab No Link af4de560-ebf3-4500-a320-6042d3794a26 b82e7941-b47f-477d-9c10-1d7ef85185ff"]',
          )
@@ -26,9 +28,10 @@ export default () => {
             singlelinetext: "new",
          });
          cy.get("@list").find(".webix_dataview_item").should("have.length", 3);
-      });
+         cy.TestLog("✓ Unlinked DC Loads Data");
 
-      it("Linked DC loads data according to parent cursor", () => {
+         // Test 2: Linked DC loads data according to parent cursor
+         cy.log("Test 2: Linked DC loads data according to parent cursor");
          cy.get(
             '[data-cy="tab Linked baae6c32-ca96-4e21-acd2-7a54f57de3d8 b82e7941-b47f-477d-9c10-1d7ef85185ff"]',
          )
@@ -74,9 +77,10 @@ export default () => {
             .first()
             .should("contain", "Record B")
             .and("not.contain", "Record A");
-      });
+         cy.TestLog("✓ Linked DC loads data according to parent cursor");
 
-      it("Follows another datacollection's cursor", () => {
+         // Test 3: Follows another datacollection's cursor
+         cy.log("Test 3: Follows another datacollection's cursor");
          cy.get(
             '[data-cy="tab Follow 415d32b3-5201-4a6f-bb06-10b3f4229f24 b82e7941-b47f-477d-9c10-1d7ef85185ff"]',
          )
@@ -107,9 +111,12 @@ export default () => {
          cy.get("@item").should("have.length", 1);
          cy.get("@item").should("exist");
          cy.get("@item").first().should("contain", "Record A");
-      });
+         cy.TestLog("✓ Follows another datacollection's cursor");
 
-      it("Should keep selected cursor when cursor of a linked DC changes", () => {
+         // Test 4: Should keep selected cursor when cursor of a linked DC changes
+         cy.log(
+            "Test 4: Should keep selected cursor when cursor of a linked DC changes",
+         );
          // Select the Tabview
          cy.get(
             '[data-cy="tab Cursor 3f06ceac-ac30-4e64-b165-e30002fff60c b82e7941-b47f-477d-9c10-1d7ef85185ff"]',
@@ -172,9 +179,14 @@ export default () => {
             .find('[aria-rowindex="30"]')
             .should("contain", newData)
             .should("have.class", "webix_row_select");
-      });
+         cy.TestLog(
+            "✓ Should keep selected cursor when cursor of a linked DC changes",
+         );
 
-      it("Should Manage Updating Data across multiple DCs and cursors", () => {
+         // Test 5: Should Manage Updating Data across multiple DCs and cursors
+         cy.log(
+            "Test 5: Should Manage Updating Data across multiple DCs and cursors",
+         );
          // Select the Tabview
          cy.get(
             '[data-cy="tab Cursor ++ 0139ab53-3d56-42d4-afd6-da7cb5df503b b82e7941-b47f-477d-9c10-1d7ef85185ff"]',
@@ -296,11 +308,14 @@ export default () => {
             .should("contain", "Sproket")
             .should("contain", "Morganto")
             .should("not.contain", "Lester");
-      });
+         cy.TestLog(
+            "✓ Should Manage Updating Data across multiple DCs and cursors",
+         );
 
-      // Issue: https://github.com/CruGlobal/ns_app/issues/368
-      // Fix:   https://github.com/CruGlobal/appbuilder_class_core/pull/211
-      it("Should NOT add new entries that are not linked to same link cursor", () => {
+         // Test 6: Should NOT add new entries that are not linked to same link cursor
+         cy.log(
+            "Test 6: Should NOT add new entries that are not linked to same link cursor",
+         );
          // Select the Tabview
          cy.get(
             '[data-cy="tab Cursor ++ 0139ab53-3d56-42d4-afd6-da7cb5df503b b82e7941-b47f-477d-9c10-1d7ef85185ff"]',
@@ -353,6 +368,9 @@ export default () => {
             .should("contain", "Morganto")
             .should("not.contain", "Lester")
             .should("not.contain", "Spanky");
+         cy.TestLog(
+            "✓ Should NOT add new entries that are not linked to same link cursor",
+         );
       });
    });
 };
