@@ -6,7 +6,7 @@ const WidgetSmokeTestCases = [
    require("./test_cases/widget_carousel.js"),
    require("./test_cases/widget_combo.js"),
    require("./test_cases/widget_chart.js"),
-   // require("./test_cases/widget_csv_exporter.js"),
+   require("./test_cases/widget_csv_exporter.js"),
    require("./test_cases/widget_detail.js"),
    require("./test_cases/widget_docx_builder.js"),
    require("./test_cases/widget_grid.js"),
@@ -15,7 +15,6 @@ const WidgetSmokeTestCases = [
    require("./test_cases/widget_menu.js"),
    require("./test_cases/widget_tab.js"),
    require("./test_cases/widget_text.js"),
-   require("./test_cases/widget_docx_builder.js"),
    require("./test_cases/widget_image.js"),
 ];
 const WidgetTestCases = [
@@ -71,8 +70,10 @@ beforeEach(() => {
 });
 
 describe("Smoke Test", () => {
-   it("App Loads", () => {
+   beforeEach(() => {
       cy.AuthLogin();
+   });
+   it("App Loads", () => {
       cy.visit("/");
       cy.get('[data-cy="portal_work_menu_sidebar"]', { timeout: 30000 })
          .should("be.visible")
@@ -81,19 +82,21 @@ describe("Smoke Test", () => {
          "exist",
       );
    });
+});
 
+describe("View Widget Tests", () => {
+   beforeEach(() => {
+      cy.AuthLogin();
+      cy.visit("/");
+      cy.get('[data-cy="portal_work_menu_sidebar"]', { timeout: 30000 })
+         .should("be.visible")
+         .click();
+      cy.get('[data-cy="0ac51d6c-7c95-461c-aa8b-7da00afc4f48"]')
+         .should("be.visible")
+         .click();
+      cy.get('[data-cy="cb77ced0-a803-46b7-8a79-f9084d75d51c"]').click();
+   });
    WidgetSmokeTestCases.forEach((tc) => {
-      beforeEach(() => {
-         cy.AuthLogin();
-         cy.visit("/");
-         cy.get('[data-cy="portal_work_menu_sidebar"]', { timeout: 30000 })
-            .should("be.visible")
-            .click();
-         cy.get('[data-cy="0ac51d6c-7c95-461c-aa8b-7da00afc4f48"]')
-            .should("be.visible")
-            .click();
-         cy.get('[data-cy="cb77ced0-a803-46b7-8a79-f9084d75d51c"]').click();
-      });
       tc(folderName, Common);
    });
 });
@@ -149,22 +152,21 @@ describe("Widget Tests", () => {
 });
 
 describe("Process Tests", () => {
+   beforeEach(() => {
+      cy.RunSQL(folderName, [
+         "reset_tables.sql",
+         "reset_roles.sql",
+         "add_testkcs.sql",
+         "add_testkcs2-Menu.sql",
+         "add_testkcs2-combo.sql",
+         "add_testkcs2-ScopedData.sql",
+         "assign_testkcs_testkcs2.sql",
+      ]);
+      cy.AuthLogin();
+      cy.visit("/");
+      cy.get('[data-cy="dd6f7981-cc7b-457c-b231-742ce85004f8"]').click();
+   });
    ProcessTestCases.forEach((tc) => {
-      beforeEach(() => {
-         cy.RunSQL(folderName, [
-            "reset_tables.sql",
-            "reset_roles.sql",
-            "add_testkcs.sql",
-            "add_testkcs2-Menu.sql",
-            "add_testkcs2-combo.sql",
-            "add_testkcs2-ScopedData.sql",
-            "assign_testkcs_testkcs2.sql",
-         ]);
-         cy.AuthLogin();
-         cy.visit("/");
-         cy.get('[data-cy="dd6f7981-cc7b-457c-b231-742ce85004f8"]').click();
-      });
-
       tc(folderName, Common);
    });
 });
