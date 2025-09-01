@@ -4,12 +4,10 @@ const folderName = __dirname.match(/[^\\/]+$/)[0];
 
 const WidgetSmokeTestCases = [
    require("./test_cases/widget_carousel.js"),
-   require("./test_cases/widget_combo.js"),
    require("./test_cases/widget_chart.js"),
    require("./test_cases/widget_csv_exporter.js"),
    require("./test_cases/widget_detail.js"),
    require("./test_cases/widget_docx_builder.js"),
-   require("./test_cases/widget_grid.js"),
    require("./test_cases/widget_image.js"),
    require("./test_cases/widget_label.js"),
    require("./test_cases/widget_menu.js"),
@@ -20,6 +18,8 @@ const WidgetSmokeTestCases = [
 const WidgetTestCases = [
    require("./test_cases/dataCollection.js"), // not a widget test - may refactor to a different group
    require("./test_cases/widget_comment.js"),
+   require("./test_cases/widget_grid.js"),
+   require("./test_cases/widget_combo.js"),
    require("./test_cases/widget_filter_by_connected_record.js"),
    require("./test_cases/widget_conditional_container.js"),
    require("./test_cases/widget_form_save.js"),
@@ -62,11 +62,6 @@ before(() => {
       "add_testkcs2-ScopedData.sql",
       "assign_testkcs_testkcs2.sql",
    ]);
-});
-
-beforeEach(() => {
-   cy.visit("/");
-   cy.AuthLogin();
 });
 
 describe("Smoke Test", () => {
