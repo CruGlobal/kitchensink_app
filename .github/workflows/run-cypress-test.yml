@@ -48,9 +48,9 @@ jobs:
 
       - name: Wait for services to be ready
         run: |
-            # Define a list of services to check
-            SERVICES_TO_CHECK=("ab_web" "ab_db" "ab_redis")
-            TIMEOUT=3000 # Timeout in seconds
+            # List of services to check
+            SERVICES_TO_CHECK=("ab_db" "ab_redis" "ab_web")
+            TIMEOUT=3000
 
             for SERVICE in "${SERVICES_TO_CHECK[@]}"; do
                echo "Waiting for service: $SERVICE"
