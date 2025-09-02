@@ -14,6 +14,7 @@ const WidgetSmokeTestCases = [
    require("./test_cases/widget_tab.js"),
    require("./test_cases/widget_text.js"),
    require("./test_cases/widget_image.js"),
+   require("./test_cases/widget_conditional_container.js")
 ];
 const WidgetTestCases = [
    require("./test_cases/dataCollection.js"), // not a widget test - may refactor to a different group
@@ -21,7 +22,6 @@ const WidgetTestCases = [
    require("./test_cases/widget_grid.js"),
    require("./test_cases/widget_combo.js"),
    require("./test_cases/widget_filter_by_connected_record.js"),
-   require("./test_cases/widget_conditional_container.js"),
    require("./test_cases/widget_form_save.js"),
    require("./test_cases/widget_form.js"),
    require("./test_cases/widget_form2.js"),
