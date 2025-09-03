@@ -8,7 +8,8 @@ export default (folderName) => {
          ).click();
       });
 
-      it("Displays a Pie Chart", () => {
+      it("Display Charts", () => {
+         cy.log("Displays a Pie Chart");
          // check the legend of pie chart
          cy.get('*[class^="webix_chart_legend_item"]').then(($lis) => {
             expect($lis.eq(2)).to.contain("5");
@@ -76,9 +77,7 @@ export default (folderName) => {
                "coords",
                "304.5,62,272,8,282,4,292,1,303,0,304,0,304.5,62",
             );
-      });
-
-      it("Displays a Bar Chart", () => {
+         cy.log("Displays a Bar Chart");
          // check the legend of bar chart
          cy.get('*[class^="webix_chart_legend_item"]').then(($lis) => {
             expect($lis.eq(7)).to.contain("5");
@@ -148,9 +147,7 @@ export default (folderName) => {
             .eq(4)
             .should("have.attr", "shape", "RECT")
             .should("have.attr", "coords", "498.6,116,542.6,125");
-      });
-
-      it("Displays a Line Chart", () => {
+         cy.log("Displays a Line Chart");
          // check the canvas text (axis y)
          cy.get('div[class*="webix_canvas_text webix_axis_item_y"]').then(
             ($lis) => {
