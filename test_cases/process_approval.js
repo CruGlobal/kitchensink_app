@@ -4,7 +4,7 @@ export default (folderName, Common) => {
          cy.RunSQL(
             folderName,
             ["add_testkcs_stock.sql"],
-            ["process_test-kcs-onCreate-process.sql"],
+            ["process_test-kcs-onCreate-process.sql"]
          );
       });
 
@@ -18,7 +18,7 @@ export default (folderName, Common) => {
             .click();
 
          cy.get(
-            '[data-cy="tab Order 499a4429-9cd3-43ea-bf5d-60e0caacc5eb 1169d7cf-d03d-4bd5-b282-4897b3329d7c"]',
+            '[data-cy="tab Order 499a4429-9cd3-43ea-bf5d-60e0caacc5eb 1169d7cf-d03d-4bd5-b282-4897b3329d7c"]'
          )
             .should("exist")
             .click();
@@ -34,7 +34,7 @@ export default (folderName, Common) => {
          // Sometimes the progress icon is gone too fast.
          // let's make sure that by counting elements in the grid instead.
          cy.get(
-            '[data-cy="ABViewGrid_b5ccd065-a499-48b0-ac86-6c0ae4247de2_datatable"]',
+            '[data-cy="ABViewGrid_b5ccd065-a499-48b0-ac86-6c0ae4247de2_datatable"]'
          )
             .children()
             .should("have.length.gte", 7);
@@ -43,7 +43,7 @@ export default (folderName, Common) => {
 
          // Click on the button "New Order"
          cy.get(
-            '[data-cy="menu-item New Order ed0e35bb-9367-4fa8-83cc-b6318375fd56 25735600-076c-4f11-874b-d33863eea029"]',
+            '[data-cy="menu-item New Order ed0e35bb-9367-4fa8-83cc-b6318375fd56 25735600-076c-4f11-874b-d33863eea029"]'
          )
             .should("exist")
             .click();
@@ -51,7 +51,7 @@ export default (folderName, Common) => {
          // On the field "test-kcs-process-stock", choose "Coke"
 
          cy.get(
-            '[data-cy="connectObject testkcsprocessstock 20027a41-14aa-4679-9f30-a066f153a89a 79d1f941-04c2-4d65-98e9-1303da4412c2"]',
+            '[data-cy="connectObject testkcsprocessstock 20027a41-14aa-4679-9f30-a066f153a89a 79d1f941-04c2-4d65-98e9-1303da4412c2"]'
          )
             .find(".webix_el_box")
             .should("be.visible")
@@ -65,7 +65,7 @@ export default (folderName, Common) => {
          // On the field "amount", fill up "10"
 
          cy.get(
-            '[data-cy="number amount 79902266-40e5-463a-9869-cee01ef955a0 79d1f941-04c2-4d65-98e9-1303da4412c2"]',
+            '[data-cy="number amount 79902266-40e5-463a-9869-cee01ef955a0 79d1f941-04c2-4d65-98e9-1303da4412c2"]'
          ).type("10");
 
          // Click on the button "save"
@@ -87,7 +87,7 @@ export default (folderName, Common) => {
             .and("be.visible");
 
          cy.get(
-            '[data-cy="inbox-accordion-app-holder-0ac51d6c-7c95-461c-aa8b-7da00afc4f48_b17f815f-cadc-4829-afb0-a7a726bde018"]',
+            '[data-cy="inbox-accordion-app-holder-0ac51d6c-7c95-461c-aa8b-7da00afc4f48_b17f815f-cadc-4829-afb0-a7a726bde018"]'
          )
             .contains("Admin Verify")
             .scrollIntoView()
@@ -109,7 +109,7 @@ export default (folderName, Common) => {
             .and("be.visible");
 
          cy.get(
-            '[data-cy="inbox-accordion-app-holder-0ac51d6c-7c95-461c-aa8b-7da00afc4f48_b17f815f-cadc-4829-afb0-a7a726bde018"]',
+            '[data-cy="inbox-accordion-app-holder-0ac51d6c-7c95-461c-aa8b-7da00afc4f48_b17f815f-cadc-4829-afb0-a7a726bde018"]'
          )
             .contains("Admin Verify")
             .scrollIntoView()
@@ -129,7 +129,7 @@ export default (folderName, Common) => {
             .click();
 
          cy.get(
-            '[data-cy="tab Stock a4459ed7-ee91-4f24-9d04-7252af85dcbc 1169d7cf-d03d-4bd5-b282-4897b3329d7c"]',
+            '[data-cy="tab Stock a4459ed7-ee91-4f24-9d04-7252af85dcbc 1169d7cf-d03d-4bd5-b282-4897b3329d7c"]'
          )
             .should("exist")
             .click();
@@ -145,7 +145,7 @@ export default (folderName, Common) => {
             .click();
 
          cy.get(
-            '[data-cy="tab Order 499a4429-9cd3-43ea-bf5d-60e0caacc5eb 1169d7cf-d03d-4bd5-b282-4897b3329d7c"]',
+            '[data-cy="tab Order 499a4429-9cd3-43ea-bf5d-60e0caacc5eb 1169d7cf-d03d-4bd5-b282-4897b3329d7c"]'
          )
             .should("exist")
             .click();
@@ -161,14 +161,14 @@ export default (folderName, Common) => {
          // Sometimes the progress icon is gone too fast.
          // let's make sure that by counting elements in the grid instead.
          cy.get(
-            '[data-cy="ABViewGrid_b5ccd065-a499-48b0-ac86-6c0ae4247de2_datatable"]',
+            '[data-cy="ABViewGrid_b5ccd065-a499-48b0-ac86-6c0ae4247de2_datatable"]'
          )
             .children()
             .should("have.length", 7);
 
          // Click on the button "New Order"
          cy.get(
-            '[data-cy="menu-item New Order ed0e35bb-9367-4fa8-83cc-b6318375fd56 25735600-076c-4f11-874b-d33863eea029"]',
+            '[data-cy="menu-item New Order ed0e35bb-9367-4fa8-83cc-b6318375fd56 25735600-076c-4f11-874b-d33863eea029"]'
          )
             .should("exist")
             .click();
@@ -176,7 +176,7 @@ export default (folderName, Common) => {
          // On the field "test-kcs-process-stock", choose "Est"
 
          cy.get(
-            '[data-cy="connectObject testkcsprocessstock 20027a41-14aa-4679-9f30-a066f153a89a 79d1f941-04c2-4d65-98e9-1303da4412c2"]',
+            '[data-cy="connectObject testkcsprocessstock 20027a41-14aa-4679-9f30-a066f153a89a 79d1f941-04c2-4d65-98e9-1303da4412c2"]'
          )
             .find(".webix_el_box")
             .should("be.visible")
@@ -190,7 +190,7 @@ export default (folderName, Common) => {
          // On the field "amount", fill up "20"
 
          cy.get(
-            '[data-cy="number amount 79902266-40e5-463a-9869-cee01ef955a0 79d1f941-04c2-4d65-98e9-1303da4412c2"]',
+            '[data-cy="number amount 79902266-40e5-463a-9869-cee01ef955a0 79d1f941-04c2-4d65-98e9-1303da4412c2"]'
          ).type("20");
 
          // Click on the button "save"
@@ -212,7 +212,7 @@ export default (folderName, Common) => {
             .and("be.visible");
 
          cy.get(
-            '[data-cy="inbox-accordion-app-holder-0ac51d6c-7c95-461c-aa8b-7da00afc4f48_b17f815f-cadc-4829-afb0-a7a726bde018"]',
+            '[data-cy="inbox-accordion-app-holder-0ac51d6c-7c95-461c-aa8b-7da00afc4f48_b17f815f-cadc-4829-afb0-a7a726bde018"]'
          )
             .contains("Admin Verify")
             .scrollIntoView()
@@ -229,7 +229,7 @@ export default (folderName, Common) => {
             .and("be.visible");
 
          cy.get(
-            '[data-cy="inbox-accordion-app-holder-0ac51d6c-7c95-461c-aa8b-7da00afc4f48_b17f815f-cadc-4829-afb0-a7a726bde018"]',
+            '[data-cy="inbox-accordion-app-holder-0ac51d6c-7c95-461c-aa8b-7da00afc4f48_b17f815f-cadc-4829-afb0-a7a726bde018"]'
          )
             .contains("Admin Verify")
             .scrollIntoView()
@@ -249,7 +249,7 @@ export default (folderName, Common) => {
             .click();
 
          cy.get(
-            '[data-cy="tab Stock a4459ed7-ee91-4f24-9d04-7252af85dcbc 1169d7cf-d03d-4bd5-b282-4897b3329d7c"]',
+            '[data-cy="tab Stock a4459ed7-ee91-4f24-9d04-7252af85dcbc 1169d7cf-d03d-4bd5-b282-4897b3329d7c"]'
          )
             .should("exist")
             .click();

@@ -3,11 +3,11 @@ export default (folderName) => {
       before(() => {
          cy.RunSQL(
             folderName,
-            "add_test_kcs_filterByConnectedRecord_2_and_3.sql",
+            "add_test_kcs_filterByConnectedRecord_2_and_3.sql"
          );
          cy.RunSQL(
             folderName,
-            "add_test_kcs_filterByConnectedRecordByCustomIndex_2_and_3.sql",
+            "add_test_kcs_filterByConnectedRecordByCustomIndex_2_and_3.sql"
          );
       });
 
