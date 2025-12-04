@@ -68,9 +68,13 @@ export default () => {
             .first()
             .click();
 
+         // JOHNNY: some runs are inconsistent depending on timing and when
+         // cypress performs it's check. This test was failing when we got to
+         // checking for Record B but the page refreshed and cypress lost it's
+         // reference to the DOM.
+         cy.get("@list").find(".webix_dataview_item").should("have.length", 1);
          cy.get("@list")
             .find(".webix_dataview_item")
-            .should("have.length", 1)
             .first()
             .should("contain", "Record B")
             .and("not.contain", "Record A");
