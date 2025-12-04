@@ -1,8 +1,8 @@
-export default (folderName) => {
+export default () => {
    describe("Tab", () => {
-      //1. can find the text "test tab 1"
-      it("can find the text test tab 1", () => {
-         // cy.RunSQL(folderName, ["add_testkcs.sql"]);
+      it("Tab Tests", () => {
+         // Test 1: can find the text "test tab 1"
+         cy.log("Test 1: can find the text test tab 1");
          cy.get(
             '[data-cy="tab-Tab-7334ce3e-ca25-432d-94e1-40e53a72edb3-b52e6e96-5033-4c7f-a104-29bd5ddcac4a"]',
          ).click();
@@ -13,11 +13,10 @@ export default (folderName) => {
          cy.get("div")
             .should("contain", "test tab 1")
             .and("have.class", "webix_el_box");
-      }); //End 1
+         cy.TestLog("✓ can find the text test tab 1");
 
-      //2. can find the text "test tab 2"
-      it("can find the text test tab 2", () => {
-         // cy.RunSQL(folderName, ["add_testkcs.sql"]);
+         // Test 2: can find the text "test tab 2"
+         cy.log("Test 2: can find the text test tab 2");
          cy.get(
             '[data-cy="tab-Tab-7334ce3e-ca25-432d-94e1-40e53a72edb3-b52e6e96-5033-4c7f-a104-29bd5ddcac4a"]',
          ).click();
@@ -28,11 +27,10 @@ export default (folderName) => {
          cy.get("div")
             .should("contain", "test tab 2")
             .and("have.class", "webix_el_box");
-      }); //End 2
+         cy.TestLog("✓ can find the text test tab 2");
 
-      //3. can find the text "test tab 3"
-      it("can find the text test tab 3", () => {
-         // cy.RunSQL(folderName, ["add_testkcs.sql"]);
+         // Test 3: can find the text "test tab 3"
+         cy.log("Test 3: can find the text test tab 3");
          cy.get(
             '[data-cy="tab-Tab-7334ce3e-ca25-432d-94e1-40e53a72edb3-b52e6e96-5033-4c7f-a104-29bd5ddcac4a"]',
          ).click();
@@ -43,11 +41,10 @@ export default (folderName) => {
          cy.get("div")
             .should("contain", "test tab 3")
             .and("have.class", "webix_el_box");
-      }); //End 3
+         cy.TestLog("✓ can find the text test tab 3");
 
-      //4. can find the text "test tab 4"
-      it("can find the text test tab 4", () => {
-         // cy.RunSQL(folderName, ["add_testkcs.sql"]);
+         // Test 4: can find the text "test tab 4"
+         cy.log("Test 4: can find the text test tab 4");
          cy.get(
             '[data-cy="tab-Tab-7334ce3e-ca25-432d-94e1-40e53a72edb3-b52e6e96-5033-4c7f-a104-29bd5ddcac4a"]',
          ).click();
@@ -58,11 +55,10 @@ export default (folderName) => {
          cy.get("div")
             .should("contain", "test tab 4")
             .and("have.class", "webix_el_box");
-      }); //End 4
+         cy.TestLog("✓ can find the text test tab 4");
 
-      //5. can find the text "test tab 5"
-      it("can find the text test tab 5", () => {
-         // cy.RunSQL(folderName, ["add_testkcs.sql"]);
+         // Test 5: can find the text "test tab 5"
+         cy.log("Test 5: can find the text test tab 5");
          cy.get(
             '[data-cy="tab-Tab-7334ce3e-ca25-432d-94e1-40e53a72edb3-b52e6e96-5033-4c7f-a104-29bd5ddcac4a"]',
          ).click();
@@ -73,6 +69,7 @@ export default (folderName) => {
          cy.get("div")
             .should("contain", "test tab 5")
             .and("have.class", "webix_el_box");
-      }); //End 5
+         cy.TestLog("✓ can find the text test tab 5");
+      }); //End it
    }); //End describe
 }; //End Export

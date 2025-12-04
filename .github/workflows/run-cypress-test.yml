@@ -1,70 +1,92 @@
-name: Cypress Test
+name: E2E Tests
+# Installs AB with the given runtime and run our e2e test.
 on:
-  # Run on any commit to the #master branch
-  push:
-    branches: [master]
+   workflow_call:
+      inputs:
+         ref:
+            required: true
+            type: string
+   push:
+      branches: [master]
 
-  # Run on pull requests into the #master branch
+   # Run on pull requests into the #master branch
+   pull_request:
+      branches: [master]
 
-  pull_request:
-    branches: [master]
-
-  # Allows user to trigger the workflow from GitHub's web UI
-  workflow_dispatch:
-
+   # Allows user to trigger the workflow from GitHub's web UI
+   workflow_dispatch:
 jobs:
-  cypress-test:
-    runs-on: ubuntu-latest
-    env:
-      CYPRESS_RESPONSE_TIMEOUT: 200000
-      CYPRESS_DEFAULT_COMMAND_TIMEOUT: 30000
-      CYPRESS_RETRIES: 2
-    steps:
-      # Setup
-      - uses: digi-serve/ab-install-action@v1
-        with:
-          folder: ab
-          port: 8080
+   cypress-test:
+      name: Cypress E2E Tests
+      runs-on: ubuntu-latest
+      env:
+         CYPRESS_RESPONSE_TIMEOUT: 200000
+         CYPRESS_DEFAULT_COMMAND_TIMEOUT: 30000
+         CYPRESS_RETRIES: 2
+      steps:
+         - name: Install AppBuilder
+           uses: CruGlobal/ab-install-action@v1
+           with:
+              folder: ab
+              port: 8080
+              runtime: ${{ inputs.ref }}
 
-      # Up
-      - name: Bring up AppBuilder
-        run: ./UP.sh -q -t
-        working-directory: ./ab
+         - name: Check out kitchen-sink tests
+           uses: actions/checkout@v4
+           with:
+              path: ab/test/e2e/cypress/e2e/kitchensink_app
 
-      - name: Check out
-        uses: actions/checkout@v3
-        with:
-          path: ab/test/e2e/cypress/e2e/kitchensink_app
+         - name: Deploy Stack
+           run: ./UP.sh -t -q
+           working-directory: ./ab
 
-      # These next steps are to save our ablogs to file
-      - run: npm install pm2@latest -g
-        working-directory: ./ab
-      - name: Save Logs
-        run: pm2 start ./logs.js -- --toFile logs/ABServices.log
-        working-directory: ./ab
+         # These next steps are to save our ablogs to file
+         - run: npm install pm2@latest -g
+         - name: Save Logs
+           run: pm2 start ./logs.js -- --toFile logs/ABServices.log
+           working-directory: ./ab
 
-      - name: Sleep for 30 seconds
-        run: sleep 100s
-        shell: bash
-  
-      # #Run test
-      # - name: Wait for AB
-      #   uses: ifaxity/wait-on-action@v1.1.0
-      #   with:
-      #     resource: http://localhost:8080
-      #     timeout: 300000
-          
-      - name: Run Cypress Tests
-        run: npm run test:e2e:app -- --browser chrome
-        working-directory: ./ab
+         - name: Wait for services to be ready
+           run: |
+              # List of services to check
+              SERVICES_TO_CHECK=("ab_db" "ab_redis" "ab_web")
+              TIMEOUT=3000
 
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: cypress-screenshots
-          path: ./ab/test/e2e/cypress/screenshots
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: ABServices.log
-          path: ./ab/logs/ABServices.log
+              for SERVICE in "${SERVICES_TO_CHECK[@]}"; do
+                 echo "Waiting for service: $SERVICE"
+                 start_time=$(date +%s)
+                 while true; do
+                 if docker service ls | grep "$SERVICE" | grep "1/1"; then
+                    echo "$SERVICE is ready. ✅"
+                    break
+                 fi
+
+                 current_time=$(date +%s)
+                 elapsed_time=$((current_time - start_time))
+
+                 if [ $elapsed_time -ge $TIMEOUT ]; then
+                    echo "❌ Timed out waiting for $SERVICE."
+                    docker service ls
+                    exit 1
+                 fi
+
+                 echo "Waiting for $SERVICE to start... ($elapsed_time/${TIMEOUT}s)"
+                 sleep 5
+                 done
+              done
+
+         - name: Run Cypress Tests
+           run: npm run test:e2e:ab-runtime -- --browser chrome
+           working-directory: ./ab
+
+         - uses: actions/upload-artifact@v4
+           if: failure()
+           with:
+              name: cypress-screenshots
+              path: ./ab/test/e2e/cypress/screenshots
+
+         - uses: actions/upload-artifact@v4
+           if: failure()
+           with:
+              name: ABServices.log
+              path: ./ab/logs/ABServices.log
