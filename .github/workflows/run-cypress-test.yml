@@ -75,9 +75,15 @@ jobs:
                  done
               done
 
-         - name: Run Cypress Tests
-           run: npm run test:e2e:ab-runtime -- --browser chrome
-           working-directory: ./ab
+         - name: un Cypress Tests E2E on Chrome
+           uses: cypress-io/github-action@v6
+           with:
+              browser: chrome
+              working-directory: ./ab
+              project: ./test/e2e
+              env: reporter=dot
+              config-file: cypress.ab_runtime.js
+
 
          - uses: actions/upload-artifact@v4
            if: failure()
