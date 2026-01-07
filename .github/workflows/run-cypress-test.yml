@@ -76,13 +76,13 @@ jobs:
               done
 
          - name: un Cypress Tests E2E on Chrome
+         - name: Run Cypress Tests E2E on Chrome
            uses: cypress-io/github-action@v6
            with:
               browser: chrome
               working-directory: ./ab
               project: ./test/e2e
-              env: reporter=dot
-              config: pageLoadTimeout=30000,baseUrl=http://localhost:8080,CYPRESS_RETRIES=2
+              config: pageLoadTimeout=30000,baseUrl=http://localhost:8080
               config-file: cypress.ab_runtime.mjs
 
 
