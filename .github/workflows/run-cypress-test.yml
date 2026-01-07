@@ -81,7 +81,7 @@ jobs:
               browser: chrome
               working-directory: ./ab
               project: ./test/e2e
-              config: pageLoadTimeout=30000,baseUrl=http://localhost:8080
+              config: baseUrl=http://localhost:8080
               config-file: cypress.ab_runtime.mjs
 
 
