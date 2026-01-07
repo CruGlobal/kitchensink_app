@@ -32,7 +32,7 @@ jobs:
               runtime: ${{ inputs.ref }}
 
          - name: Check out kitchen-sink tests
-           uses: actions/checkout@v4
+           uses: actions/checkout@v6
            with:
               path: ab/test/e2e/cypress/e2e/kitchensink_app
 
@@ -82,6 +82,7 @@ jobs:
               working-directory: ./ab
               project: ./test/e2e
               env: reporter=dot
+              config: pageLoadTimeout=30000,baseUrl=http://localhost:8080,CYPRESS_RETRIES=2
               config-file: cypress.ab_runtime.mjs
 
 
