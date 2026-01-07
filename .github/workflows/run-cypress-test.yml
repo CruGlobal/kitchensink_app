@@ -82,7 +82,7 @@ jobs:
               working-directory: ./ab
               project: ./test/e2e
               env: reporter=dot
-              config-file: cypress.ab_runtime.js
+              config-file: cypress.ab_runtime.mjs
 
 
          - uses: actions/upload-artifact@v4
