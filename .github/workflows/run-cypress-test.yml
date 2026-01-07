@@ -75,7 +75,6 @@ jobs:
                  done
               done
 
-         - name: un Cypress Tests E2E on Chrome
          - name: Run Cypress Tests E2E on Chrome
            uses: cypress-io/github-action@v6
            with:
