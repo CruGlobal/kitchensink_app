@@ -32,7 +32,7 @@ jobs:
               runtime: ${{ inputs.ref }}
 
          - name: Check out kitchen-sink tests
-           uses: actions/checkout@v4
+           uses: actions/checkout@v6
            with:
               path: ab/test/e2e/cypress/e2e/kitchensink_app
 
@@ -75,9 +75,15 @@ jobs:
                  done
               done
 
-         - name: Run Cypress Tests
-           run: npm run test:e2e:ab-runtime -- --browser chrome
-           working-directory: ./ab
+         - name: Run Cypress Tests E2E on Chrome
+           uses: cypress-io/github-action@v6
+           with:
+              browser: chrome
+              working-directory: ./ab
+              project: ./test/e2e
+              config: baseUrl=http://localhost:8080
+              config-file: cypress.ab_runtime.mjs
+
 
          - uses: actions/upload-artifact@v4
            if: failure()

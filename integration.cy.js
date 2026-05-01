@@ -6,6 +6,7 @@ const WidgetSmokeTestCases = [
    require("./test_cases/widget_carousel.js"),
    require("./test_cases/widget_chart.js"),
    require("./test_cases/widget_csv_exporter.js"),
+   // require("./test_cases/widget_kanban.js"),
    require("./test_cases/widget_detail.js"),
    require("./test_cases/widget_docx_builder.js"),
    require("./test_cases/widget_image.js"),
