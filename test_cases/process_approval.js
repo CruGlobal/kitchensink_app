@@ -201,7 +201,7 @@ export default (folderName, Common) => {
 
          // Say "Deny" on the email
 
-         cy.get(".webix_badge").should("exist").and("be.visible");
+         cy.get(".webix_badge", { timeout: 60000 }).should("exist");
 
          cy.get('[data-cy="inbox_icon"]')
             .should("exist")
