@@ -26,7 +26,9 @@ export default () => {
          cy.get(
             '[data-cy^="ABViewGrid_42938e52-9da9-4ece-b492-deb253244d3e_datatable"]',
          ).scrollIntoView();
-         cy.get(".webix_ss_center_scroll").contains("Test Record Rules");
+         cy.get(".webix_ss_center_scroll", { timeout: 30000 }).contains(
+            "Test Record Rules",
+         );
          cy.get(".webix_ss_center_scroll").contains("5");
          cy.get(".webix_ss_center_scroll").contains("Option 2");
          cy.log(

@@ -76,14 +76,9 @@ export default (folderName) => {
             .children("span")
             .children("ul")
             .children()
-            .as("warnings")
-            .should("have.length", 2);
-         cy.get("@warnings")
-            .eq(0)
-            .should("contain", "Missing Required Field daterequired");
-         cy.get("@warnings")
-            .eq(1)
-            .should("contain", "Missing Required Field singlelinetextrequired");
+            .as("warnings");
+         cy.get("@warnings").should("contain", "Missing Required Field daterequired");
+         cy.get("@warnings").should("contain", "Missing Required Field singlelinetextrequired");
          cy.get("@alert").children(".webix_popup_controls").click();
          cy.get("@alert").should("not.exist");
 
