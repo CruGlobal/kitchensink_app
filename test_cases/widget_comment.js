@@ -1,3 +1,17 @@
+/**
+ * Click the first comment's [...] menu until its popup is visible.
+ * Webix drops the click if it lands too soon after another popup closed.
+ */
+function openCommentMenu(tries = 10) {
+   cy.get("@theComment").find(".webix_comments_menu").click({ force: true });
+   cy.get(".webix_popup.webix_menu").then(($menus) => {
+      if ($menus.filter(":visible").length) return;
+      if (tries <= 1) throw new Error("comment menu did not open");
+      cy.wait(200);
+      openCommentMenu(tries - 1);
+   });
+}
+
 export default (/*folderName*/) => {
    describe("Comment", () => {
       beforeEach(() => {
@@ -130,9 +144,9 @@ export default (/*folderName*/) => {
             .should("be.visible")
             .and("contain", "hello world!");
          // 17. Delete the comment
-         cy.get("@theComment")
-            .find(".webix_comments_menu")
-            .click({ force: true });
+         // Webix ignores a menu click that comes right after the confirm box
+         // closes, so click until the menu opens.
+         openCommentMenu();
          cy.get(".webix_popup.webix_menu")
             .filter(":visible")
             .find('[webix_l_id="remove"]')

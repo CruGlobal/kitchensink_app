@@ -94,8 +94,10 @@ export default (folderName) => {
       });
 
       it("can upload photo", () => {
+         // Cypress 16: cy.fixture() only reads inside the fixtures folder, so
+         // read the image with cy.readFile() (path from the project root).
          const photoPath = path.join(
-            "..",
+            "cypress",
             "e2e",
             `${folderName}`,
             "test_example",
@@ -120,7 +122,7 @@ export default (folderName) => {
             .invoke("attr", "data-uploader-id")
             .then((uploader) => {
                // prepare the upload file
-               cy.fixture(photoPath).then((data) => {
+               cy.readFile(photoPath, "base64").then((data) => {
                   const blob = Cypress.Blob.base64StringToBlob(
                      data,
                      `image/${fileExtension}`,

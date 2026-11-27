@@ -14,11 +14,26 @@ export default () => {
       });
 
       it("Submit Record Rules Form", () => {
+         // This page has 2 forms. Each one calls focusOnFirst() when its data
+         // finishes loading, so the one that loads last takes focus, even in
+         // the middle of typing. Cypress 16 types into the focused element, so
+         // wait until a form has taken focus, give the other one a moment, then
+         // click our field and check the text landed in it.
+         cy.get('input[data-cy^="string Title 2e7a1c02-141a-4cdd-b93e-62c6c4e4765b"]')
+            .should("have.length", 2);
+         cy.focused().should("match", 'input[data-cy^="string Title 2e7a1c02-141a-4cdd-b93e-62c6c4e4765b"]');
+         cy.wait(500);
          cy.get(
             '[data-cy="string Title 2e7a1c02-141a-4cdd-b93e-62c6c4e4765b 7e074587-ddc5-4d34-9f37-a0ab88a4258b"]',
          )
+            .as("title")
             .should("be.visible")
+            .click()
             .type("Test Record Rules", { delay: 0 });
+         cy.get("@title")
+            .should("have.value", "Test Record Rules")
+            .and("have.focus")
+            .blur();
 
          cy.get('[data-cy="button save 7e074587-ddc5-4d34-9f37-a0ab88a4258b"]')
             .should("be.enabled")
