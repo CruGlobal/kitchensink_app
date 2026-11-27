@@ -340,7 +340,7 @@ jobs:
          resource: http://localhost/
          timeout: 300000
     - name: Run Cypress Tests
-      run: npm run test:e2e:app -- --browser chrome
+      run: npm run test:e2e:app -- --browser electron
       working-directory: ./ab
     - uses: actions/upload-artifact@v7
       if: failure()

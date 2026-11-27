@@ -106,22 +106,39 @@ jobs:
               done
 
          - name: Wait for API to be ready
+           timeout-minutes: 10
+           working-directory: ./ab
            run: |
+              # /home is served by nginx alone; / is proxied to api_sails.
+              # 000/502/503/504 on / means api_sails is not up yet.
+              probe() {
+                 curl -s -o /dev/null -w '%{http_code}' --connect-timeout 5 --max-time 10 "http://127.0.0.1:8080$1" || true
+              }
               sleep 20
-              for i in $(seq 1 60); do
-                 if curl -s -o /dev/null http://localhost:1337; then
-                    echo "api_sails is ready. ✅"
-                    exit 0
-                 fi
-                 echo "Waiting for api_sails... ($i/60)"
+              for i in $(seq 1 40); do
+                 NGINX=$(probe /home)
+                 API=$(probe /)
+                 case "$API" in
+                    000|502|503|504) ;;
+                    *)
+                       echo "api_sails is ready (/home $NGINX, / $API). ✅"
+                       # The service restarts end the log streams; reattach them.
+                       pm2 restart all > /dev/null
+                       exit 0
+                       ;;
+                 esac
+                 echo "Waiting for api_sails... ($i/40, /home $NGINX, / $API)"
                  sleep 5
               done
               echo "❌ Timed out waiting for api_sails."
               docker service ls
+              docker ps --format '{{.Names}}\t{{.Status}}\t{{.Ports}}'
+              curl -sv --max-time 10 http://127.0.0.1:8080/home -o /dev/null || true
+              pm2 restart all > /dev/null || true
               exit 1
 
          - name: Run Cypress Tests
-           run: npm run test:e2e:ab-runtime -- --browser chrome
+           run: npm run test:e2e:ab-runtime -- --browser electron
            working-directory: ./ab
 
          - uses: actions/upload-artifact@v7
