@@ -32,7 +32,7 @@ jobs:
               runtime: ${{ inputs.ref }}
 
          - name: Check out kitchen-sink tests
-           uses: actions/checkout@v4
+           uses: actions/checkout@v7
            with:
               path: ab/test/e2e/cypress/e2e/kitchensink_app
 
@@ -75,17 +75,79 @@ jobs:
                  done
               done
 
+         # The fresh test DB is built from mysql/init/*.sql, which is missing
+         # tables added by later migrations (e.g. SITE_PLUGIN_LINK). Run the
+         # migration manager, then restart the app services that crashed on
+         # startup because of the missing tables.
+         - name: Run DB migrations
+           working-directory: ./ab
+           run: |
+              STACK=$(grep -E '^CYPRESS_STACK=' .env | cut -d= -f2 | tr -d '"')
+              STACK=${STACK:-test_ab}
+
+              # MariaDB may still be starting up, so retry a few times.
+              for i in 1 2 3 4 5 6; do
+                 if docker run --rm --env-file .env --network="${STACK}_default" \
+                    digiserve/ab-migration-manager:master node app.js; then
+                    echo "Migrations done. ✅"
+                    break
+                 fi
+                 if [ "$i" -eq 6 ]; then
+                    echo "❌ Migrations failed."
+                    exit 1
+                 fi
+                 echo "Migration attempt $i failed, retrying in 10s..."
+                 sleep 10
+              done
+
+              for SVC in $(docker service ls --filter "name=${STACK}_" --format '{{.Name}}' | grep -vE "_(db|redis|web)$"); do
+                 echo "Restarting $SVC"
+                 docker service update --force --detach "$SVC" > /dev/null
+              done
+
+         - name: Wait for API to be ready
+           timeout-minutes: 10
+           working-directory: ./ab
+           run: |
+              # /home is served by nginx alone; / is proxied to api_sails.
+              # 000/502/503/504 on / means api_sails is not up yet.
+              probe() {
+                 curl -s -o /dev/null -w '%{http_code}' --connect-timeout 5 --max-time 10 "http://127.0.0.1:8080$1" || true
+              }
+              sleep 20
+              for i in $(seq 1 40); do
+                 NGINX=$(probe /home)
+                 API=$(probe /)
+                 case "$API" in
+                    000|502|503|504) ;;
+                    *)
+                       echo "api_sails is ready (/home $NGINX, / $API). ✅"
+                       # The service restarts end the log streams; reattach them.
+                       pm2 restart all > /dev/null
+                       exit 0
+                       ;;
+                 esac
+                 echo "Waiting for api_sails... ($i/40, /home $NGINX, / $API)"
+                 sleep 5
+              done
+              echo "❌ Timed out waiting for api_sails."
+              docker service ls
+              docker ps --format '{{.Names}}\t{{.Status}}\t{{.Ports}}'
+              curl -sv --max-time 10 http://127.0.0.1:8080/home -o /dev/null || true
+              pm2 restart all > /dev/null || true
+              exit 1
+
          - name: Run Cypress Tests
-           run: npm run test:e2e:ab-runtime -- --browser chrome
+           run: npm run test:e2e:ab-runtime -- --browser electron
            working-directory: ./ab
 
-         - uses: actions/upload-artifact@v4
+         - uses: actions/upload-artifact@v7
            if: failure()
            with:
               name: cypress-screenshots
               path: ./ab/test/e2e/cypress/screenshots
 
-         - uses: actions/upload-artifact@v4
+         - uses: actions/upload-artifact@v7
            if: failure()
            with:
               name: ABServices.log

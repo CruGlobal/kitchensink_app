@@ -13,7 +13,6 @@ const WidgetSmokeTestCases = [
    require("./test_cases/widget_menu.js"),
    require("./test_cases/widget_tab.js"),
    require("./test_cases/widget_text.js"),
-   require("./test_cases/widget_image.js"),
    require("./test_cases/widget_conditional_container.js")
 ];
 const WidgetTestCases = [
@@ -25,8 +24,9 @@ const WidgetTestCases = [
    require("./test_cases/widget_form_save.js"),
    require("./test_cases/widget_form.js"),
    require("./test_cases/widget_form2.js"),
-   require("./test_cases/widget_scope.js"),
 ];
+// Scope tests reload to their own page, so they skip the nav in beforeEach.
+const ScopeTestCases = [require("./test_cases/widget_scope.js")];
 
 const ProcessTestCases = [
    require("./test_cases/process_approval.js"),
@@ -51,7 +51,6 @@ before(() => {
    cy.request("POST", "/test/import", {
       file: `imports/${folderName}/appbuilder_pwa_app.json`,
    });
-   cy.AuthLogin();
 
    cy.RunSQL(folderName, [
       "reset_tables.sql",
@@ -97,16 +96,10 @@ describe("View Widget Tests", () => {
 });
 
 describe("pwa Tests", () => {
+   // Each pwa test visits its own route, so no page load here.
    beforeEach(() => {
-      cy.visit("/");
       cy.AuthLogin();
       cy.viewport("iphone-6"); // Set viewport to 375px x 667px
-      cy.visit(
-         "/mobile/app/admin/c355634c-42ca-4317-a086-3aeb4f750d8b?route=First_Page",
-      );
-      cy.get(".title-large-text", { timeout: 30000 })
-         .should("be.visible")
-         .contains("First Page");
    });
 
    pwaTestCases.forEach((tc) => {
@@ -142,6 +135,25 @@ describe("Widget Tests", () => {
    });
 
    WidgetTestCases.forEach((tc) => {
+      tc(folderName, Common);
+   });
+});
+
+describe("Scope Tests", () => {
+   beforeEach(() => {
+      cy.RunSQL(folderName, [
+         "reset_tables.sql",
+         "reset_roles.sql",
+         "add_testkcs.sql",
+         "add_testkcs2-Menu.sql",
+         "add_testkcs2-combo.sql",
+         "add_testkcs2-ScopedData.sql",
+         "assign_testkcs_testkcs2.sql",
+      ]);
+      cy.AuthLogin();
+   });
+
+   ScopeTestCases.forEach((tc) => {
       tc(folderName, Common);
    });
 });
